@@ -9,4 +9,4 @@ if [ -z $dst ]; then
 	exit 1
 fi
 
-iptables -t nat -A PREROUTING -i eth0 -p tcp --dport $src -j REDIRECT --to-port $dst
+/usr/sbin/iptables -t nat -A PREROUTING -i eth0 -p tcp --dport $src -j REDIRECT --to-port $dst
