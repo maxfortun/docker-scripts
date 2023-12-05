@@ -12,9 +12,8 @@ fi
 SWD=$(cd $(dirname $0); pwd)
 $SWD/dockerUnassignPort.sh $srcPort
 
-redirect="-p tcp --dport $srcPort -j REDIRECT --to-port $dstPort"
-comment="dpsrv:redirect:port:$srcPort"
+redirect="-p tcp --dport $srcPort -j REDIRECT --to-port $dstPort -m comment --comment dpsrv:redirect:port:$srcPort"
 
-/sbin/iptables -t nat -C OUTPUT -o lo $redirect || /sbin/iptables -t nat -A OUTPUT -o lo $redirect -m comment --comment "$comment"
-/sbin/iptables -t nat -C PREROUTING $redirect || /sbin/iptables -t nat -A PREROUTING $redirect -m comment --comment "$comment"
+/sbin/iptables -t nat -A OUTPUT -o lo $redirect
+/sbin/iptables -t nat -A PREROUTING $redirect
 
