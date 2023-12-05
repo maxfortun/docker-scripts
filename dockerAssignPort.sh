@@ -9,8 +9,12 @@ if [ -z $dstPort ]; then
         exit 1
 fi
 
-redirect="-p tcp --dport $srcPort -j REDIRECT --to-port $dstPort"
+SWD=$(cd $(dirname $0); pwd)
+$SWD/dockerUnassignPort.sh $srcPort
 
-/sbin/iptables -t nat -C OUTPUT -o lo $redirect || /sbin/iptables -t nat -A OUTPUT -o lo $redirect
-/sbin/iptables -t nat -C PREROUTING $redirect || /sbin/iptables -t nat -A PREROUTING $redirect
+redirect="-p tcp --dport $srcPort -j REDIRECT --to-port $dstPort"
+comment="dpsrv:redirect:port:$srcPort"
+
+/sbin/iptables -t nat -C OUTPUT -o lo $redirect || /sbin/iptables -t nat -A OUTPUT -o lo $redirect -m comment --comment "$comment"
+/sbin/iptables -t nat -C PREROUTING $redirect || /sbin/iptables -t nat -A PREROUTING $redirect -m comment --comment "$comment"
 
